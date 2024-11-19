@@ -35,15 +35,14 @@ extract_file() {
         echo -e "\e[1;33m[!] Skipping extraction...\e[0m"
     else
         tar xpvf "$1/debian12-arm64.tar.gz" -C "$1" --numeric-owner >/dev/null 2>&1
-        if [ $? -eq 0 ]; then
-            success "File extracted successfully: $1/debian12-arm64"
-        else
-            echo -e "\e[1;31m[!] Error extracting file. Exiting...\e[0m"
+        if [ $? -ne 0 ] && [ ! -d "$1/debian12-arm64" ]; then 
+            echo -e "\e[1;31m[!] Error extracting file and directory does not exist. Exiting...\e[0m"
             exit 1
+        else
+            success "File extracted (or partially extracted previously) successfully: $1/debian12-arm64"
         fi
     fi
 }
-
 # Function to download and execute script
 download_and_execute_script() {
     progress "Downloading script..."
