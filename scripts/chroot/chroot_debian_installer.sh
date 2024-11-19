@@ -15,6 +15,9 @@ progress() {
 success() {
     echo -e "\e[1;32m[✓] $1\e[0m"
 }
+warning() {
+    echo -e "\e[1;33m[!] Warning: $1\e[0m"
+}
 
 # Function to download file with skip option
 download_file() {
@@ -41,27 +44,21 @@ download_file() {
 extract_file() {
     local extract_path="$1"
     local filename="$2"
-    local force="${3:-false}"
     local target_dir="${filename%.tar.gz}"
 
-    if [ -d "$extract_path/$target_dir" ] && [ "$force" = "false" ]; then
+    if [ -d "$extract_path/$target_dir" ]; then
         echo -e "\e[1;33m[!] Directory already exists: $extract_path/$target_dir\e[0m"
-        echo -e "\e[1;33m[!] Use 'force' parameter to overwrite.\e[0m"
+        echo -e "\e[1;33m[!] Skipping extraction...\e[0m"
         return 0
     fi
 
-    # If force is true, remove existing directory
-    if [ "$force" = "true" ]; then
-        rm -rf "$extract_path/$target_dir"
-    fi
-
-    progress "Extracting file..."
+    progress "Attempting to extract file..."
     tar xpvf "$extract_path/$filename" -C "$extract_path" --numeric-owner >/dev/null 2>&1
     if [ $? -eq 0 ]; then
         success "File extracted successfully: $extract_path/$target_dir"
     else
-        echo -e "\e[1;31m[!] Error extracting file. Exiting...\e[0m"
-        goodbye
+        warning "Error extracting file: $filename. Continuing with next steps..."
+        return 0
     fi
 }
 
@@ -116,8 +113,6 @@ configure_debian_chroot() {
         echo -e "\e[1;33m[!] Reusing existing directory...\e[0m"
     fi
 
-    # Rest of the function remains the same...
-    # (previous mount commands and configuration steps)
 }
 
 # Remaining functions (install_xfce4, install_kde, etc.) stay the same
@@ -135,12 +130,16 @@ main() {
         fi
         
         download_file "$download_dir" "debian12-arm64.tar.gz" "https://github.com/LinuxDroidMaster/Termux-Desktops/releases/download/Debian/debian12-arm64.tar.gz"
-        extract_file "$download_dir" "debian12-arm64.tar.gz" # default behavior        download_and_execute_script
+        
+        # Continue even if extraction fails
+        extract_file "$download_dir" "debian12-arm64.tar.gz"
+        
+        # Always proceed to next steps
+        download_and_execute_script
         configure_debian_chroot
         modify_startfile_with_username
     fi
 }
-
 # Call the main function with ASCII art
 echo -e "\e[32m"
 cat << "EOF"
