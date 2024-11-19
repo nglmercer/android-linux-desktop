@@ -9,32 +9,7 @@ progress() {
 success() {
     echo -e "\e[1;32m[✓] $1\e[0m"
 }
-DIR="/data/local/tmp/"
 
-if [ -d "$DIR" ]; then
-  # Preguntar al usuario si quiere borrar el directorio
-  read -p "Borrar el directorio $DIR y su contenido? (yes/no): " CONFIRM
-
-  if [[ "$CONFIRM" == "yes" || "$CONFIRM" == "y" ]]; then
-    # Borrar el directorio y su contenido con su -c
-    echo "Borrando $DIR..."
-    su -c "rm -rf \"$DIR\""
-
-    # Verificar si rm se ejecutó sin errores
-    if [ $? -eq 0 ]; then
-      echo "$DIR borrado."
-    else
-      echo "Error al borrar $DIR."
-    fi
-  elif [[ "$CONFIRM" == "no" || "$CONFIRM" == "n" ]]; then
-    echo "El directorio no será borrado."
-  else
-    echo "Respuesta no válida. Introduce 'yes' o 'no'."
-    exit 1
-  fi
-else
-  echo "$DIR no existe."
-fi
 # Function to download file
 download_file() {
     progress "Downloading file..."
@@ -231,6 +206,32 @@ main() {
         echo -e "\e[1;31m[!] This script must be run as root. Exiting...\e[0m"
         exit 1
     else
+        DIR="/data/local/tmp/"
+
+        if [ -d "$DIR" ]; then
+        # Preguntar al usuario si quiere borrar el directorio
+        read -p "Borrar el directorio $DIR y su contenido? (yes/no): " CONFIRM
+
+        if [[ "$CONFIRM" == "yes" || "$CONFIRM" == "y" ]]; then
+            # Borrar el directorio y su contenido con su -c
+            echo "Borrando $DIR..."
+            su -c "rm -rf \"$DIR\""
+
+            # Verificar si rm se ejecutó sin errores
+            if [ $? -eq 0 ]; then
+            echo "$DIR borrado."
+            else
+            echo "Error al borrar $DIR."
+            fi
+        elif [[ "$CONFIRM" == "no" || "$CONFIRM" == "n" ]]; then
+            echo "El directorio no será borrado."
+        else
+            echo "Respuesta no válida. Introduce 'yes' o 'no'."
+            exit 1
+        fi
+        else
+        echo "$DIR no existe."
+        fi
         download_dir="/data/local/tmp/chrootDebian"
         if [ ! -d "$download_dir" ]; then
             mkdir -p "$download_dir"
