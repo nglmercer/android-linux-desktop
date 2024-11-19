@@ -132,7 +132,7 @@ configure_debian_chroot() {
     echo "2. KDE - not ready"
     echo "3. Cinnamon - not ready"
     echo "4. LXDE - not ready"
-    echo -n "Enter your choice (1-4): "
+    echo -n "Enter your choice (1-4): Default 1"
     read DE_OPTION
 
     # Install selected desktop environment
@@ -150,8 +150,7 @@ configure_debian_chroot() {
             install_lxde
             ;;
         *)
-            echo -e "\e[1;31m[!] Invalid option. Exiting...\e[0m"
-            exit 1
+            install_xfce4
             ;;
     esac
 }
