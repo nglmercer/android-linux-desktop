@@ -95,6 +95,8 @@ and many more.
 ### Pre-requisites
 - Root access(recommend magisk manager)
 - Busybox installed [busybox github](https://github.com/Magisk-Modules-Alt-Repo/BuiltIn-BusyBox)
+
+### Installation
 1. Open Termux and update Termux packages.
 ```
 pkg update && pkg upgrade
@@ -115,6 +117,10 @@ wget https://raw.githubusercontent.com/LinuxDroidMaster/Termux-Desktops/main/scr
 chmod +x chroot_debian_installer.sh
 su
 sh chroot_debian_installer.sh
+```
+link alternatively:
+```
+wget https://raw.githubusercontent.com/nglmercer/android-linux-desktop/main/scripts/chroot/chroot_debian_installer.sh
 ```
 4. follow the instructions
 5. run the script file.
