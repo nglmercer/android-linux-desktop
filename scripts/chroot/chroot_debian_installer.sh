@@ -209,8 +209,9 @@ main() {
         DIR="/data/local/tmp/"
 
         if [ -d "$DIR" ]; then
-        # Preguntar al usuario si quiere borrar el directorio
-        read -p "Borrar el directorio $DIR y su contenido? (yes/no): " CONFIRM
+        # Mostrar prompt usando echo
+        echo -n "Borrar el directorio $DIR y su contenido? (yes/no): "
+        read CONFIRM  # Leer la entrada del usuario
 
         if [[ "$CONFIRM" == "yes" || "$CONFIRM" == "y" ]]; then
             # Borrar el directorio y su contenido con su -c
