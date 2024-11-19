@@ -9,6 +9,27 @@ progress() {
 success() {
     echo -e "\e[1;32m[✓] $1\e[0m"
 }
+DIR="/data/local/tmp/"
+
+# Comprobar si el directorio existe
+if [ -d "$DIR" ]; then
+  # Preguntar al usuario si quiere borrar los archivos antiguos
+  read -p "delete old files in $DIR? (yes/no): " CONFIRM
+
+  if [[ "$CONFIRM" == "yes" || "$CONFIRM" == "y" ]]; then
+    # Borrar el directorio y su contenido
+    echo "deleting $DIR..."
+    rm -rf "$DIR"
+    echo "$DIR deleted."
+  elif [[ "$CONFIRM" == "no" || "$CONFIRM" == "n" ]]; then
+    echo "files will not be deleted."
+  else
+    echo "invalid response. please enter 'yes' or 'no'."
+    exit 1
+  fi
+else
+  echo "$DIR no existe."
+fi
 
 # Function to download file
 download_file() {
@@ -50,7 +71,7 @@ download_and_execute_script() {
         echo -e "\e[1;33m[!] Script already exists: /data/local/tmp/start_debian.sh\e[0m"
         echo -e "\e[1;33m[!] Skipping download...\e[0m"
     else
-        wget -O "/data/local/tmp/start_debian.sh" "https://raw.githubusercontent.com/LinuxDroidMaster/Termux-Desktops/main/scripts/chroot/debian/start_debian.sh"
+        wget -O "/data/local/tmp/start_debian.sh" "https://raw.githubusercontent.com/nglmercer/android-linux-desktop/main/scripts/chroot/start_debian.sh"
         if [ $? -eq 0 ]; then
             success "Script downloaded successfully: /data/local/tmp/start_debian.sh"
             progress "Setting script permissions..."
@@ -185,7 +206,7 @@ install_lxde() {
 download_startxfce4_script() {
     progress "Downloading startxfce4_chrootDebian.sh script..."
     if [ "$DE_OPTION" -eq 1 ]; then
-        wget -O "./startxfce4_chrootDebian_chrootDebian.sh" "https://raw.githubusercontent.com/LinuxDroidMaster/Termux-Desktops/main/scripts/chroot/debian/startxfce4_chrootDebian.sh"
+        wget -O "./startxfce4_chrootDebian_chrootDebian.sh" "https://raw.githubusercontent.com/nglmercer/android-linux-desktop/main/scripts/chroot/startxfce4_chrootDebian.sh"
         if [ $? -eq 0 ]; then
             success "startxfce4_chrootDebian.sh script downloaded successfully"
         else

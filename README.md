@@ -113,7 +113,7 @@ pkg install tsu
 ```
 3.💻Download Debian chroot - automatic installer 
 ```
-wget https://raw.githubusercontent.com/LinuxDroidMaster/Termux-Desktops/main/scripts/chroot/debian/chroot_debian_installer.sh
+wget https://raw.githubusercontent.com/nglmercer/android-linux-desktop/main/scripts/chroot/chroot_debian_installer.sh
 chmod +x chroot_debian_installer.sh
 su
 sh chroot_debian_installer.sh
@@ -125,7 +125,7 @@ wget https://raw.githubusercontent.com/nglmercer/android-linux-desktop/main/scri
 4. follow the instructions
 5. run the script file.
 ```
-wget https://raw.githubusercontent.com/LinuxDroidMaster/Termux-Desktops/main/scripts/chroot/debian/startxfce4_chrootDebian.sh
+wget https://raw.githubusercontent.com/nglmercer/android-linux-desktop/main/scripts/chroot/startxfce4_chrootDebian.sh
 chmod +x startxfce4_chrootDebian.sh
 ./startxfce4_chrootDebian.sh
 ```
@@ -141,11 +141,11 @@ pkg install termux-x11-nightly -y
 pkg install pulseaudio -y
 pkg install xfce4 -y
 pkg install tsu -y
-wget https://raw.githubusercontent.com/LinuxDroidMaster/Termux-Desktops/main/scripts/chroot/debian/chroot_debian_installer.sh
+wget https://raw.githubusercontent.com/nglmercer/android-linux-desktop/main/scripts/chroot/chroot_debian_installer.sh
 chmod +x chroot_debian_installer.sh
 su
 sh chroot_debian_installer.sh
-wget https://raw.githubusercontent.com/LinuxDroidMaster/Termux-Desktops/main/scripts/chroot/debian/startxfce4_chrootDebian.sh
+wget https://raw.githubusercontent.com/nglmercer/android-linux-desktop/main/scripts/chroot/startxfce4_chrootDebian.sh
 chmod +x startxfce4_chrootDebian.sh
 ./startxfce4_chrootDebian.sh
 ```
