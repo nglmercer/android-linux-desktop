@@ -116,6 +116,10 @@ configure_debian_chroot() {
 }
 
 # Remaining functions (install_xfce4, install_kde, etc.) stay the same
+modify_startfile_with_username() {
+    success "Set start_debian.sh file with user name..."
+    sed -i "s/droidmaster/$USERNAME/g" "$DEBIANPATH/../start_debian.sh"
+}
 
 # Main function
 main() {
