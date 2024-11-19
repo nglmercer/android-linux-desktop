@@ -46,7 +46,6 @@ extract_file() {
 
     if [ -d "$extract_path/$target_dir" ]; then
         echo -e "\e[1;33m[!] Directory already exists: $extract_path/$target_dir\e[0m"
-        echo -e "\e[1;33m[!] Skipping extraction...\e[0m"
         return 0
     fi
 
@@ -67,7 +66,6 @@ download_and_execute_script() {
 
     if [ -e "$script_path" ]; then
         echo -e "\e[1;33m[!] Script already exists: $script_path\e[0m"
-        echo -e "\e[1;33m[!] Skipping download...\e[0m"
         return 0
     fi
 
@@ -84,52 +82,47 @@ download_and_execute_script() {
     fi
 }
 
-# Function to configure Debian chroot environment
-configure_debian_chroot() {
-    progress "Configuring Debian chroot environment..."
-    DEBIANPATH="/data/local/tmp/chrootDebian"
+# Main menu function
+main_menu() {
+    while true; do
+        echo -e "\e[1;36m[+] Debian Chroot Installation Menu:\e[0m"
+        echo "1. Download and Extract Debian Chroot"
+        echo "2. Configure Debian Chroot Environment"
+        echo "3. Start Debian Chroot"
+        echo "4. Exit"
+        echo -n "Enter your choice (1-4): "
+        read CHOICE
 
-    # Check and create directory only if it doesn't exist
-    if [ ! -d "$DEBIANPATH" ]; then
-        mkdir -p "$DEBIANPATH"
-        if [ $? -eq 0 ]; then
-            success "Created directory: $DEBIANPATH"
-        else
-            echo -e "\e[1;31m[!] Error creating directory: $DEBIANPATH. Exiting...\e[0m"
-            goodbye
-        fi
-    else
-        echo -e "\e[1;33m[!] Directory already exists: $DEBIANPATH\e[0m"
-        echo -e "\e[1;33m[!] Reusing existing directory...\e[0m"
-    fi
-
-    # Rest of the function remains the same...
-    # (previous mount commands and configuration steps)
-}
-
-# Remaining functions (install_xfce4, install_kde, etc.) stay the same
-
-# Main function
-main() {
-    if [ "$(whoami)" != "root" ]; then
-        echo -e "\e[1;31m[!] This script must be run as root. Exiting...\e[0m"
-        goodbye
-    else
-        download_dir="/data/local/tmp/chrootDebian"
-        if [ ! -d "$download_dir" ]; then
-            mkdir -p "$download_dir"
-            success "Created directory: $download_dir"
-        fi
-        
-        download_file "$download_dir" "debian12-arm64.tar.gz" "https://github.com/LinuxDroidMaster/Termux-Desktops/releases/download/Debian/debian12-arm64.tar.gz"
-        extract_file "$download_dir" "debian12-arm64.tar.gz"
-        download_and_execute_script
-        configure_debian_chroot
-        modify_startfile_with_username
+        case $CHOICE in
+            1)
+                download_dir="/data/local/tmp/chrootDebian"
+                if [ ! -d "$download_dir" ]; then
+                    mkdir -p "$download_dir"
+                    success "Created directory: $download_dir"
+                fi
+                
+                download_file "$download_dir" "debian12-arm64.tar.gz" "https://github.com/LinuxDroidMaster/Termux-Desktops/releases/download/Debian/debian12-arm64.tar.gz"
+                extract_file "$download_dir" "debian12-arm64.tar.gz"
+                download_and_execute_script
+                ;;
+            2)
+                configure_debian_chroot
+                ;;
+            3)
+                # Modify this path if necessary
+                /data/local/tmp/start_debian.sh
+                ;;
+            4)
+                exit 0
+                ;;
+            *)
+                echo -e "\e[1;31m[!] Invalid option. Please try again.\e[0m"
+                ;;
+        esac
     fi
 }
 
-# Call the main function with ASCII art
+# ASCII art
 echo -e "\e[32m"
 cat << "EOF"
 ___  ____ ____ _ ___  _  _ ____ ____ ___ ____ ____    ____ _  _ ____ ____ ____ ___ 
@@ -139,4 +132,11 @@ ___  ____ ____ _ ___  _  _ ____ ____ ___ ____ ____    ____ _  _ ____ ____ ____ _
 EOF
 echo -e "\e[0m"
 
-main
+# Check for root
+if [ "$(whoami)" != "root" ]; then
+    echo -e "\e[1;31m[!] This script must be run as root. Exiting...\e[0m"
+    exit 1
+fi
+
+# Call the main menu
+main_menu
