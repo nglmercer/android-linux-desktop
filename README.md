@@ -1,6 +1,6 @@
 # android-linux-desktop
  Documentation and testing of programs, applications and uses of the Linux environment in Android using Termux, both for root users with chroot Linux (root) and proot Linux (noroot)
-# Prerequisites
+## Prerequisites
 
 ### Termux
 
@@ -14,7 +14,7 @@ Termux:x11 is a Termux package that provides a graphical environment for running
 1. git for cloning projects or repositories ```pkg install git```
 2. wget for downloading files ```pkg install wget```
 3. nano for editing files ```pkg install nano```
-## Installation
+## Installation Native Termux Desktop
 
 1. Download Termux from the [Termux GitHub repository](https://github.com/termux/termux-app) in releases download section (not playstore version) or download this apk in f-droid store.
 2. Download Termux:x11 from the [Termux:x11 GitHub repository](https://github.com/termux/termux-x11) in releases download section. 
@@ -58,23 +58,37 @@ wget https://raw.githubusercontent.com/LinuxDroidMaster/Termux-Desktops/main/scr
 chmod +x startxfce4_termux.sh
 ./startxfce4_termux.sh
 ```
-
-## Termux:x11
-
-Termux:x11 is a Termux package that provides a graphical environment for running X11 applications.
-
-## Applications
+### Execution
+- execute the script file
+```
+./startxfce4_termux.sh
+```
+### If Termux X11 randomly getting killed/shutdown
+- execute with adb shell
+```
+adb shell "/system/bin/device_config set_sync_disabled_for_tests persistent"
+adb shell "/system/bin/device_config put activity_manager max_phantom_processes 2147483647"
+adb shell settings put global settings_enable_monitor_phantom_procs false
+```
+### credits and more information
+this documentation is based on the following documentation:
+- https://github.com/LinuxDroidMaster/Termux-Desktops
+#### especially the following documentation:
+- https://github.com/LinuxDroidMaster/Termux-Desktops/blob/main/Documentation/native/termux_native.md
+## Applications in Native Termux Desktop
 
 There are many applications that you can run like vs code, Firefox, Chrome
 and many more.
-1. VS Code `pkg install code-oss`
-2. Firefox `pkg install firefox`
-3. Chrome `pkg install chromium`
-4. LibreOffice `pkg install libreoffice-fresh`
-5. Gimp `pkg install gimp`
-6. VLC `pkg install vlc`
-7. audacity `pkg install audacity`
-8. mpv `pkg install mpv`
-9. mplayer `pkg install mplayer`
-10. obs `pkg install obs-studio`
-11. code-server `pkg install code-server`
+1. VS Code `pkg install code-oss` [x] tested and working
+2. Firefox `pkg install firefox` [x] tested and working
+3. Chrome `pkg install chromium` [x] tested and working
+5. Gimp `pkg install gimp` [x] tested and working
+6. VLC `pkg install vlc` [] no open in my device
+7. audacity `pkg install audacity` [x] tested and working
+8. blender `pkg install blender` [x] tested and working
+9. kdenlive `pkg install kdenlive` [x] tested and working
+10. 
+17. code-server `pkg install code-server` [x] tested and working
+18. mpv `pkg install mpv` [x] tested and working in terminal
+19. mplayer `pkg install mplayer` [x] tested and working in terminal
+## Installation Chroot Linux Desktop
