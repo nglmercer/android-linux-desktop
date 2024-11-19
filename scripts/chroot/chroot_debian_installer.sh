@@ -11,26 +11,30 @@ success() {
 }
 DIR="/data/local/tmp/"
 
-# Comprobar si el directorio existe
 if [ -d "$DIR" ]; then
-  # Preguntar al usuario si quiere borrar los archivos antiguos
-  read -p "delete old files in $DIR? (yes/no): " CONFIRM
+  # Preguntar al usuario si quiere borrar el directorio
+  read -p "Borrar el directorio $DIR y su contenido? (yes/no): " CONFIRM
 
   if [[ "$CONFIRM" == "yes" || "$CONFIRM" == "y" ]]; then
-    # Borrar el directorio y su contenido
-    echo "deleting $DIR..."
-    rm -rf "$DIR"
-    echo "$DIR deleted."
+    # Borrar el directorio y su contenido con su -c
+    echo "Borrando $DIR..."
+    su -c "rm -rf \"$DIR\""
+
+    # Verificar si rm se ejecutó sin errores
+    if [ $? -eq 0 ]; then
+      echo "$DIR borrado."
+    else
+      echo "Error al borrar $DIR."
+    fi
   elif [[ "$CONFIRM" == "no" || "$CONFIRM" == "n" ]]; then
-    echo "files will not be deleted."
+    echo "El directorio no será borrado."
   else
-    echo "invalid response. please enter 'yes' or 'no'."
+    echo "Respuesta no válida. Introduce 'yes' o 'no'."
     exit 1
   fi
 else
   echo "$DIR no existe."
 fi
-
 # Function to download file
 download_file() {
     progress "Downloading file..."
