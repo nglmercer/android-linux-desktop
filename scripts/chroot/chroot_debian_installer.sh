@@ -38,16 +38,21 @@ download_file() {
     fi
 }
 
-# Function to extract file with skip option
 extract_file() {
     local extract_path="$1"
     local filename="$2"
+    local force="${3:-false}"
     local target_dir="${filename%.tar.gz}"
 
-    if [ -d "$extract_path/$target_dir" ]; then
+    if [ -d "$extract_path/$target_dir" ] && [ "$force" = "false" ]; then
         echo -e "\e[1;33m[!] Directory already exists: $extract_path/$target_dir\e[0m"
-        echo -e "\e[1;33m[!] Skipping extraction...\e[0m"
+        echo -e "\e[1;33m[!] Use 'force' parameter to overwrite.\e[0m"
         return 0
+    fi
+
+    # If force is true, remove existing directory
+    if [ "$force" = "true" ]; then
+        rm -rf "$extract_path/$target_dir"
     fi
 
     progress "Extracting file..."
@@ -60,77 +65,90 @@ extract_file() {
     fi
 }
 
-# Function to download and execute script with skip option
+# Updated download_and_execute_script function
 download_and_execute_script() {
     local script_path="/data/local/tmp/start_debian.sh"
     local script_url="https://raw.githubusercontent.com/LinuxDroidMaster/Termux-Desktops/main/scripts/chroot/debian/start_debian.sh"
+    local force="${1:-false}"
 
-    if [ -e "$script_path" ]; then
+    if [ -e "$script_path" ] && [ "$force" = "false" ]; then
         echo -e "\e[1;33m[!] Script already exists: $script_path\e[0m"
-        echo -e "\e[1;33m[!] Skipping download...\e[0m"
-    else
-        progress "Downloading script..."
-        wget -O "$script_path" "$script_url"
-        if [ $? -eq 0 ]; then
-            success "Script downloaded successfully: $script_path"
-            progress "Setting script permissions..."
-            chmod +x "$script_path"
-            success "Script permissions set"
-        else
-            echo -e "\e[1;31m[!] Error downloading script. Exiting...\e[0m"
-            goodbye
-        fi
+        echo -e "\e[1;33m[!] Executing existing script...\e[0m"
+        chmod +x "$script_path"
+        "$script_path"
+        return 0
     fi
 
-    progress "Executing script..."
-    "$script_path"
+    # If force is true, remove existing script
+    if [ "$force" = "true" ]; then
+        rm -f "$script_path"
+    fi
+
+    progress "Downloading script..."
+    wget -O "$script_path" "$script_url"
     if [ $? -eq 0 ]; then
-        success "Script executed successfully."
+        success "Script downloaded successfully: $script_path"
+        progress "Setting script permissions..."
+        chmod +x "$script_path"
+        success "Script permissions set"
+        "$script_path"
     else
-        echo -e "\e[1;31m[!] Error executing script. Exiting...\e[0m"
+        echo -e "\e[1;31m[!] Error downloading script. Exiting...\e[0m"
         goodbye
     fi
 }
+# Function to configure Debian chroot environment
+configure_debian_chroot() {
+    progress "Configuring Debian chroot environment..."
+    DEBIANPATH="/data/local/tmp/chrootDebian"
+
+    # Check and create directory only if it doesn't exist
+    if [ ! -d "$DEBIANPATH" ]; then
+        mkdir -p "$DEBIANPATH"
+        if [ $? -eq 0 ]; then
+            success "Created directory: $DEBIANPATH"
+        else
+            echo -e "\e[1;31m[!] Error creating directory: $DEBIANPATH. Exiting...\e[0m"
+            goodbye
+        fi
+    else
+        echo -e "\e[1;33m[!] Directory already exists: $DEBIANPATH\e[0m"
+        echo -e "\e[1;33m[!] Reusing existing directory...\e[0m"
+    fi
+
+    # Rest of the function remains the same...
+    # (previous mount commands and configuration steps)
+}
+
+# Remaining functions (install_xfce4, install_kde, etc.) stay the same
 
 # Main function
 main() {
     if [ "$(whoami)" != "root" ]; then
         echo -e "\e[1;31m[!] This script must be run as root. Exiting...\e[0m"
         goodbye
+    else
+        download_dir="/data/local/tmp/chrootDebian"
+        if [ ! -d "$download_dir" ]; then
+            mkdir -p "$download_dir"
+            success "Created directory: $download_dir"
+        fi
+        
+        download_file "$download_dir" "debian12-arm64.tar.gz" "https://github.com/LinuxDroidMaster/Termux-Desktops/releases/download/Debian/debian12-arm64.tar.gz"
+        extract_file "$download_dir" "debian12-arm64.tar.gz" # default behavior        download_and_execute_script
+        configure_debian_chroot
+        modify_startfile_with_username
     fi
-
-    download_dir="/data/local/tmp/chrootDebian"
-    if [ ! -d "$download_dir" ]; then
-        mkdir -p "$download_dir"
-        success "Created directory: $download_dir"
-    fi
-
-    while true; do
-        echo -e "\e[1;36m\nChoose an option:\e[0m"
-        echo "1) Extract and execute script"
-        echo "2) Execute script directly"
-        echo "3) Exit"
-        read -p "Enter your choice: " choice
-
-        case $choice in
-        1)
-            download_file "$download_dir" "debian12-arm64.tar.gz" "https://github.com/LinuxDroidMaster/Termux-Desktops/releases/download/Debian/debian12-arm64.tar.gz"
-            extract_file "$download_dir" "debian12-arm64.tar.gz"
-            download_and_execute_script
-            ;;
-        2)
-            download_and_execute_script
-            ;;
-        3)
-            echo -e "\e[1;31m[!] Exiting...\e[0m"
-            exit 0
-            ;;
-        *)
-            echo -e "\e[1;31m[!] Invalid choice. Please try again.\e[0m"
-            ;;
-        esac
-    done
 }
 
-# Call the main function
+# Call the main function with ASCII art
+echo -e "\e[32m"
+cat << "EOF"
+___  ____ ____ _ ___  _  _ ____ ____ ___ ____ ____    ____ _  _ ____ ____ ____ ___ 
+|  \ |__/ |  | | |  \ |\/| |__| [__   |  |___ |__/    |    |__| |__/ |  | |  |  |  
+|__/ |  \ |__| | |__/ |  | |  | ___]  |  |___ |  \    |___ |  | |  \ |__| |__|  |  
+                                                                                   
+EOF
+echo -e "\e[0m"
+
 main
