@@ -9,7 +9,11 @@ Termux is a terminal emulator and Linux environment for Android.
 ### Termux:x11
 
 Termux:x11 is a Termux package that provides a graphical environment for running X11 applications.
+### Recommended
 
+1. git for cloning projects or repositories ```pkg install git```
+2. wget for downloading files ```pkg install wget```
+3. nano for editing files ```pkg install nano```
 ## Installation
 
 1. Download Termux from the [Termux GitHub repository](https://github.com/termux/termux-app) in releases download section (not playstore version) or download this apk in f-droid store.
@@ -22,10 +26,10 @@ pkg update && pkg upgrade
 5. install the following packages in Termux:
 ```
 pkg install x11-repo
+pkg install tur-repo
 pkg install termux-x11-nightly
 pkg install pulseaudio
 pkg install xfce4
-pkg install tur-repo
 ```
 6. install wget and download the script file.
 ```
@@ -39,6 +43,26 @@ chmod +x startxfce4_termux.sh
 ```
 ./startxfce4_termux.sh
 ```
+### If you need to install everything without having to write anything else
+- copy and paste this script: 
+```
+pkg update -y
+pkg upgrade -y
+pkg install x11-repo -y
+pkg install tur-repo -y
+pkg install termux-x11-nightly -y
+pkg install pulseaudio -y
+pkg install xfce4 -y
+pkg install wget -y
+wget https://raw.githubusercontent.com/LinuxDroidMaster/Termux-Desktops/main/scripts/termux_native/startxfce4_termux.sh
+chmod +x startxfce4_termux.sh
+./startxfce4_termux.sh
+```
+
+## Termux:x11
+
+Termux:x11 is a Termux package that provides a graphical environment for running X11 applications.
+
 ## Applications
 
 There are many applications that you can run like vs code, Firefox, Chrome
@@ -49,3 +73,8 @@ and many more.
 4. LibreOffice `pkg install libreoffice-fresh`
 5. Gimp `pkg install gimp`
 6. VLC `pkg install vlc`
+7. audacity `pkg install audacity`
+8. mpv `pkg install mpv`
+9. mplayer `pkg install mplayer`
+10. obs `pkg install obs-studio`
+11. code-server `pkg install code-server`
