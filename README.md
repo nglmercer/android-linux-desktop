@@ -92,7 +92,9 @@ and many more.
 18. mpv `pkg install mpv` [x] tested and working in terminal
 19. mplayer `pkg install mplayer` [x] tested and working in terminal
 ## Installation Chroot Linux Desktop
-
+### Pre-requisites
+- Root access(recommend magisk manager)
+- Busybox installed [busybox github](https://github.com/Magisk-Modules-Alt-Repo/BuiltIn-BusyBox)
 1. Open Termux and update Termux packages.
 ```
 pkg update && pkg upgrade
